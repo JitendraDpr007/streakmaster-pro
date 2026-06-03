@@ -123,7 +123,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     if (p.achievements !== undefined) dbPatch.achievements = p.achievements;
     if (p.onboarded !== undefined) dbPatch.onboarded = p.onboarded;
     if (Object.keys(dbPatch).length === 0) return;
-    await supabase.from("profiles").update(dbPatch).eq("id", authUser.id);
+    await supabase.from("profiles").update(dbPatch as never).eq("id", authUser.id);
   };
 
   const recordSolve = async (questionId: string, xp: number, selectedIndex?: number) => {
