@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { CATEGORY_ICON, COMPANIES, QUESTIONS, type Category } from "@/lib/skillstreak/data";
+import { CATEGORY_ICON, COMPANIES, type Category } from "@/lib/skillstreak/data";
+import { useQuestions } from "@/lib/skillstreak/questions";
 import { CompanyChip, DifficultyBadge, XpBadge } from "@/components/skillstreak/Badges";
 import { ChallengeModal } from "@/components/skillstreak/ChallengeModal";
 
@@ -16,16 +17,15 @@ function Arena() {
   const [company, setCompany] = useState("All");
   const [cat, setCat] = useState<(typeof CATS)[number]>("All");
   const [openId, setOpenId] = useState<string | null>(null);
+  const { data: QUESTIONS = [] } = useQuestions();
 
-  // Repeat questions to simulate a feed
-  const feed = [...QUESTIONS, ...QUESTIONS, ...QUESTIONS].map((q, i) => ({ ...q, _id: `${q.id}-${i}` }));
-  const filtered = feed.filter(
+  const filtered = QUESTIONS.filter(
     (q) =>
       (company === "All" || q.companies.includes(company)) &&
       (cat === "All" || q.category === cat),
   );
 
-  const open = openId ? feed.find((q) => q._id === openId) ?? null : null;
+  const open = openId ? filtered.find((q) => q.id === openId) ?? null : null;
 
   return (
     <div>

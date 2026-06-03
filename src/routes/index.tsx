@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { QUESTIONS, CATEGORY_ICON } from "@/lib/skillstreak/data";
+import { CATEGORY_ICON } from "@/lib/skillstreak/data";
+import { useQuestions } from "@/lib/skillstreak/questions";
 import { useUser } from "@/lib/skillstreak/store";
 import { ChallengeModal } from "@/components/skillstreak/ChallengeModal";
 import { CompanyChip, DifficultyBadge, XpBadge } from "@/components/skillstreak/Badges";
@@ -17,15 +18,16 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const { user } = useUser();
+  const { user, ready } = useUser();
   const navigate = useNavigate();
+  const { data: allQuestions = [] } = useQuestions();
   const [openId, setOpenId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!user.onboarded) navigate({ to: "/onboarding" });
-  }, [user.onboarded, navigate]);
+    if (ready && !user.onboarded) navigate({ to: "/onboarding" });
+  }, [ready, user.onboarded, navigate]);
 
-  const challenges = QUESTIONS;
+  const challenges = useMemo(() => allQuestions.slice(0, 3), [allQuestions]);
   const doneCount = challenges.filter((q) => user.solved.includes(q.id)).length;
   const open = openId ? challenges.find((q) => q.id === openId) ?? null : null;
 
