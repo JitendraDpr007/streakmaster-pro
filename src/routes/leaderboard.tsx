@@ -1,38 +1,42 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { LEADERBOARD } from "@/lib/skillstreak/data";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/skillstreak/store";
+import { useAuth } from "@/lib/skillstreak/auth";
 
 export const Route = createFileRoute("/leaderboard")({
   head: () => ({ meta: [{ title: "Leaderboard · SkillStreak" }] }),
   component: Leaderboard,
 });
 
-const TABS = ["This Week", "All Time", "My College", "My Company"] as const;
+const TABS = ["All Time", "This Week"] as const;
 
 function initials(name: string) {
-  return name
-    .split(" ")
-    .map((s) => s[0])
-    .slice(0, 2)
-    .join("");
+  return name.split(" ").map((s) => s[0]).slice(0, 2).join("");
 }
 
 function Leaderboard() {
   const { user } = useUser();
-  const [tab, setTab] = useState<(typeof TABS)[number]>("This Week");
+  const { user: authUser } = useAuth();
+  const [tab, setTab] = useState<(typeof TABS)[number]>("All Time");
 
-  const me = { name: user.name, college: "Your college", xp: user.xp, streak: user.streak };
-  const board = useMemo(() => {
-    const all = [...LEADERBOARD, me]
-      .sort((a, b) => b.xp - a.xp)
-      .map((r, i) => ({ ...r, rank: i + 1 }));
-    return all;
-  }, [user.xp, user.streak, user.name]);
+  const { data: board = [] } = useQuery({
+    queryKey: ["leaderboard"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("leaderboard")
+        .select("*")
+        .limit(50);
+      if (error) throw error;
+      return data as Array<{ id: string; name: string; college: string | null; xp: number; streak: number; longest_streak: number }>;
+    },
+  });
 
-  const myRow = board.find((r) => r.name === user.name)!;
-  const rival = board[Math.max(0, myRow.rank - 2)];
-  const gap = rival ? rival.xp - me.xp : 0;
+  const ranked = board.map((r, i) => ({ ...r, rank: i + 1 }));
+  const myRow = ranked.find((r) => r.id === authUser?.id);
+  const rival = myRow && myRow.rank > 1 ? ranked[myRow.rank - 2] : null;
+  const gap = rival && myRow ? rival.xp - myRow.xp : 0;
 
   return (
     <div>
@@ -59,8 +63,7 @@ function Leaderboard() {
         </div>
       </div>
 
-      {/* Rival card */}
-      {rival && rival.name !== user.name && gap > 0 && (
+      {rival && gap > 0 && (
         <div className="mx-5 mb-3 rounded-2xl border border-cyan/30 bg-[oklch(0.86_0.16_210/0.06)] p-3.5">
           <p className="text-[10px] font-bold tracking-widest text-cyan">🎯 YOUR RIVAL</p>
           <p className="mt-1.5 text-[13px]">
@@ -70,14 +73,13 @@ function Leaderboard() {
         </div>
       )}
 
-      {/* Board */}
       <div className="space-y-1.5 px-5">
-        {board.slice(0, 10).map((row) => {
-          const isMe = row.name === user.name;
+        {ranked.slice(0, 20).map((row) => {
+          const isMe = row.id === authUser?.id;
           const medal = row.rank === 1 ? "🥇" : row.rank === 2 ? "🥈" : row.rank === 3 ? "🥉" : null;
           return (
             <div
-              key={row.name}
+              key={row.id}
               className={`flex items-center gap-3 rounded-xl border p-3 ${
                 isMe ? "border-lime/40 bg-[oklch(0.92_0.22_125/0.08)] lime-glow" : "border-border bg-card"
               }`}
@@ -100,7 +102,7 @@ function Leaderboard() {
                 <p className="truncate text-[13px] font-bold">
                   {row.name} {isMe && <span className="text-lime">· you</span>}
                 </p>
-                <p className="truncate text-[11px] text-muted-foreground">{row.college}</p>
+                <p className="truncate text-[11px] text-muted-foreground">{row.college ?? "—"}</p>
               </div>
               <div className="text-right">
                 <p className="font-mono-num text-[13px] font-bold text-lime">{row.xp.toLocaleString()}</p>
@@ -109,6 +111,13 @@ function Leaderboard() {
             </div>
           );
         })}
+        {ranked.length === 0 && (
+          <div className="rounded-2xl border border-border bg-card p-8 text-center">
+            <p className="text-3xl">🏆</p>
+            <p className="mt-2 font-bold">Be the first on the board</p>
+            <p className="mt-1 text-[12px] text-muted-foreground">Solve a challenge to earn your spot.</p>
+          </div>
+        )}
       </div>
     </div>
   );
