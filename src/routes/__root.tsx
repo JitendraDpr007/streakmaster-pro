@@ -4,6 +4,8 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
+  useNavigate,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -12,7 +14,9 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { UserProvider } from "@/lib/skillstreak/store";
+import { AuthProvider, useAuth } from "@/lib/skillstreak/auth";
 import { BottomNav } from "@/components/skillstreak/BottomNav";
+import { supabase } from "@/integrations/supabase/client";
 
 function NotFoundComponent() {
   return (
@@ -93,18 +97,50 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+const PUBLIC_PATHS = new Set(["/auth"]);
+
+function AuthGate({ children }: { children: ReactNode }) {
+  const { session, loading } = useAuth();
+  const router = useRouter();
+  const navigate = useNavigate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  // invalidate cached queries when auth changes
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      router.invalidate();
+    });
+    return () => subscription.unsubscribe();
+  }, [router]);
+
+  useEffect(() => {
+    if (loading) return;
+    if (!session && !PUBLIC_PATHS.has(pathname)) {
+      navigate({ to: "/auth" });
+    }
+  }, [loading, session, pathname, navigate]);
+
+  if (loading) return null;
+  if (!session && !PUBLIC_PATHS.has(pathname)) return null;
+  return <>{children}</>;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <UserProvider>
-        <div className="min-h-screen w-full" style={{ background: "#08080D" }}>
-          <div className="mx-auto min-h-screen w-full max-w-[430px] bg-[#08080D] pb-24">
-            <Outlet />
+      <AuthProvider>
+        <UserProvider>
+          <div className="min-h-screen w-full" style={{ background: "#08080D" }}>
+            <div className="mx-auto min-h-screen w-full max-w-[430px] bg-[#08080D] pb-24">
+              <AuthGate>
+                <Outlet />
+              </AuthGate>
+            </div>
+            <BottomNav />
           </div>
-          <BottomNav />
-        </div>
-      </UserProvider>
+        </UserProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
