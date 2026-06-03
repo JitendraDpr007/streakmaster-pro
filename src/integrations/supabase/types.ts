@@ -14,16 +14,239 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          achievements: string[]
+          college: string | null
+          created_at: string
+          daily_goal: number
+          email: string | null
+          experience_level: string | null
+          goal_companies: string[] | null
+          id: string
+          last_active_date: string | null
+          longest_streak: number
+          name: string
+          onboarded: boolean
+          streak: number
+          target: string | null
+          updated_at: string
+          xp: number
+        }
+        Insert: {
+          achievements?: string[]
+          college?: string | null
+          created_at?: string
+          daily_goal?: number
+          email?: string | null
+          experience_level?: string | null
+          goal_companies?: string[] | null
+          id: string
+          last_active_date?: string | null
+          longest_streak?: number
+          name?: string
+          onboarded?: boolean
+          streak?: number
+          target?: string | null
+          updated_at?: string
+          xp?: number
+        }
+        Update: {
+          achievements?: string[]
+          college?: string | null
+          created_at?: string
+          daily_goal?: number
+          email?: string | null
+          experience_level?: string | null
+          goal_companies?: string[] | null
+          id?: string
+          last_active_date?: string | null
+          longest_streak?: number
+          name?: string
+          onboarded?: boolean
+          streak?: number
+          target?: string | null
+          updated_at?: string
+          xp?: number
+        }
+        Relationships: []
+      }
+      questions: {
+        Row: {
+          category: string
+          companies: string[]
+          complexity: string | null
+          correct_index: number
+          created_at: string
+          difficulty: Database["public"]["Enums"]["difficulty"]
+          explanation: string
+          followup: string | null
+          icon: string | null
+          id: string
+          interview_tip: string | null
+          is_published: boolean
+          options: Json
+          question: string
+          similar_questions: string[] | null
+          slug: string | null
+          story: string
+          subcategory: string
+          times_solved: number
+          title: string
+          updated_at: string
+          why_others_wrong: string | null
+          xp: number
+        }
+        Insert: {
+          category: string
+          companies?: string[]
+          complexity?: string | null
+          correct_index: number
+          created_at?: string
+          difficulty?: Database["public"]["Enums"]["difficulty"]
+          explanation: string
+          followup?: string | null
+          icon?: string | null
+          id?: string
+          interview_tip?: string | null
+          is_published?: boolean
+          options: Json
+          question: string
+          similar_questions?: string[] | null
+          slug?: string | null
+          story: string
+          subcategory: string
+          times_solved?: number
+          title: string
+          updated_at?: string
+          why_others_wrong?: string | null
+          xp?: number
+        }
+        Update: {
+          category?: string
+          companies?: string[]
+          complexity?: string | null
+          correct_index?: number
+          created_at?: string
+          difficulty?: Database["public"]["Enums"]["difficulty"]
+          explanation?: string
+          followup?: string | null
+          icon?: string | null
+          id?: string
+          interview_tip?: string | null
+          is_published?: boolean
+          options?: Json
+          question?: string
+          similar_questions?: string[] | null
+          slug?: string | null
+          story?: string
+          subcategory?: string
+          times_solved?: number
+          title?: string
+          updated_at?: string
+          why_others_wrong?: string | null
+          xp?: number
+        }
+        Relationships: []
+      }
+      submissions: {
+        Row: {
+          correct: boolean
+          created_at: string
+          id: string
+          question_id: string
+          selected_index: number | null
+          user_id: string
+          xp_awarded: number
+        }
+        Insert: {
+          correct: boolean
+          created_at?: string
+          id?: string
+          question_id: string
+          selected_index?: number | null
+          user_id: string
+          xp_awarded?: number
+        }
+        Update: {
+          correct?: boolean
+          created_at?: string
+          id?: string
+          question_id?: string
+          selected_index?: number | null
+          user_id?: string
+          xp_awarded?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submissions_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      leaderboard: {
+        Row: {
+          college: string | null
+          id: string | null
+          longest_streak: number | null
+          name: string | null
+          streak: number | null
+          xp: number | null
+        }
+        Insert: {
+          college?: string | null
+          id?: string | null
+          longest_streak?: number | null
+          name?: string | null
+          streak?: number | null
+          xp?: number | null
+        }
+        Update: {
+          college?: string | null
+          id?: string | null
+          longest_streak?: number | null
+          name?: string | null
+          streak?: number | null
+          xp?: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      difficulty: "EASY" | "MEDIUM" | "HARD"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +373,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      difficulty: ["EASY", "MEDIUM", "HARD"],
+    },
   },
 } as const
