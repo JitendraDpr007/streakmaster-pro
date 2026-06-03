@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { CATEGORY_ICON, COMPANIES, QUESTIONS, type Category } from "@/lib/skillstreak/data";
+import { CATEGORY_ICON, COMPANIES, type Category } from "@/lib/skillstreak/data";
+import { useQuestions } from "@/lib/skillstreak/questions";
 import { CompanyChip, DifficultyBadge, XpBadge } from "@/components/skillstreak/Badges";
 import { ChallengeModal } from "@/components/skillstreak/ChallengeModal";
 
@@ -16,16 +17,15 @@ function Arena() {
   const [company, setCompany] = useState("All");
   const [cat, setCat] = useState<(typeof CATS)[number]>("All");
   const [openId, setOpenId] = useState<string | null>(null);
+  const { data: QUESTIONS = [] } = useQuestions();
 
-  // Repeat questions to simulate a feed
-  const feed = [...QUESTIONS, ...QUESTIONS, ...QUESTIONS].map((q, i) => ({ ...q, _id: `${q.id}-${i}` }));
-  const filtered = feed.filter(
+  const filtered = QUESTIONS.filter(
     (q) =>
       (company === "All" || q.companies.includes(company)) &&
       (cat === "All" || q.category === cat),
   );
 
-  const open = openId ? feed.find((q) => q._id === openId) ?? null : null;
+  const open = openId ? filtered.find((q) => q.id === openId) ?? null : null;
 
   return (
     <div>
@@ -76,11 +76,11 @@ function Arena() {
       <div className="space-y-3 px-5 pt-2">
         {filtered.map((q, i) => (
           <motion.button
-            key={q._id}
+            key={q.id}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: Math.min(i * 0.03, 0.3) }}
-            onClick={() => setOpenId(q._id)}
+            onClick={() => setOpenId(q.id)}
             className="w-full rounded-2xl border border-border bg-card p-4 text-left transition hover:border-lime/30 active:scale-[0.99]"
           >
             <div className="flex items-start justify-between gap-3">

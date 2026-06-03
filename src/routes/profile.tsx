@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ACHIEVEMENTS, levelFor } from "@/lib/skillstreak/data";
 import { useUser } from "@/lib/skillstreak/store";
+import { useAuth } from "@/lib/skillstreak/auth";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "Profile · SkillStreak" }] }),
@@ -22,6 +23,8 @@ function initials(n: string) {
 
 function Profile() {
   const { user, patch } = useUser();
+  const { user: authUser, isAdmin, signOut } = useAuth();
+  const navigate = useNavigate();
   const lvl = levelFor(user.xp);
   const pct = ((user.xp - lvl.min) / (lvl.next.min - lvl.min || 1)) * 100;
 
@@ -137,12 +140,34 @@ function Profile() {
         </div>
       </section>
 
-      <section className="mt-8 px-5">
+      <section className="mt-8 space-y-2 px-5">
+        {authUser?.email && (
+          <p className="text-center text-[11px] text-muted-foreground">
+            Signed in as {authUser.email}
+          </p>
+        )}
+        {isAdmin && (
+          <button
+            onClick={() => navigate({ to: "/admin" })}
+            className="w-full rounded-xl border border-lime/40 bg-lime/10 py-2.5 text-[12px] font-semibold text-lime"
+          >
+            Admin Panel
+          </button>
+        )}
         <button
-          onClick={() => patch({ onboarded: false, solved: [] })}
+          onClick={() => patch({ onboarded: false })}
           className="w-full rounded-xl border border-border bg-card py-2.5 text-[12px] font-semibold text-muted-foreground"
         >
-          Reset onboarding (dev)
+          Redo onboarding
+        </button>
+        <button
+          onClick={async () => {
+            await signOut();
+            navigate({ to: "/auth" });
+          }}
+          className="w-full rounded-xl border border-red-500/30 bg-red-500/5 py-2.5 text-[12px] font-semibold text-red-400"
+        >
+          Sign out
         </button>
       </section>
     </div>

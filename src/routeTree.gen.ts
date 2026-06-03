@@ -13,6 +13,7 @@ import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArenaRouteImport } from './routes/arena'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -37,6 +38,11 @@ const LeaderboardRoute = LeaderboardRouteImport.update({
   path: '/leaderboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ArenaRoute = ArenaRouteImport.update({
   id: '/arena',
   path: '/arena',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/arena': typeof ArenaRoute
+  '/auth': typeof AuthRoute
   '/leaderboard': typeof LeaderboardRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/arena': typeof ArenaRoute
+  '/auth': typeof AuthRoute
   '/leaderboard': typeof LeaderboardRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/arena': typeof ArenaRoute
+  '/auth': typeof AuthRoute
   '/leaderboard': typeof LeaderboardRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/arena'
+    | '/auth'
     | '/leaderboard'
     | '/onboarding'
     | '/profile'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/arena'
+    | '/auth'
     | '/leaderboard'
     | '/onboarding'
     | '/profile'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/arena'
+    | '/auth'
     | '/leaderboard'
     | '/onboarding'
     | '/profile'
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   ArenaRoute: typeof ArenaRoute
+  AuthRoute: typeof AuthRoute
   LeaderboardRoute: typeof LeaderboardRoute
   OnboardingRoute: typeof OnboardingRoute
   ProfileRoute: typeof ProfileRoute
@@ -151,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LeaderboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/arena': {
       id: '/arena'
       path: '/arena'
@@ -179,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   ArenaRoute: ArenaRoute,
+  AuthRoute: AuthRoute,
   LeaderboardRoute: LeaderboardRoute,
   OnboardingRoute: OnboardingRoute,
   ProfileRoute: ProfileRoute,
@@ -187,13 +208,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

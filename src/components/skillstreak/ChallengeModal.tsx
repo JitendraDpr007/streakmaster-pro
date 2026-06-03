@@ -23,7 +23,7 @@ export function ChallengeModal({
     setSelected(i);
     setRevealed(true);
     if (i === question.correctIndex) {
-      recordSolve(question.id, question.xp);
+      recordSolve(question.id, question.xp, i);
       setFloatXp(true);
       setTimeout(() => setFloatXp(false), 1200);
       confetti({
