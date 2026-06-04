@@ -16,6 +16,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { UserProvider } from "@/lib/skillstreak/store";
 import { AuthProvider, useAuth } from "@/lib/skillstreak/auth";
 import { BottomNav } from "@/components/skillstreak/BottomNav";
+import { StreakCelebration } from "@/components/skillstreak/StreakCelebration";
 import { supabase } from "@/integrations/supabase/client";
 
 function NotFoundComponent() {
