@@ -63,8 +63,30 @@ function Home() {
         </div>
       </section>
 
+      {/* Comeback / streak-save nudge */}
+      {ready && user.streak > 0 && doneCount === 0 && (
+        <section className="px-5 pb-2">
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-center gap-3 rounded-2xl border border-orange-500/40 bg-orange-500/[0.06] p-3"
+          >
+            <span className="text-2xl">⏳</span>
+            <div className="min-w-0 flex-1">
+              <p className="text-[12px] font-bold text-orange-300">
+                Your {user.streak}-day streak resets at midnight
+              </p>
+              <p className="text-[11px] text-muted-foreground">
+                One solve keeps it alive. You've got this.
+              </p>
+            </div>
+          </motion.div>
+        </section>
+      )}
+
       {/* Daily Challenges */}
       <section className="space-y-3 px-5">
+
         {challenges.map((q, i) => {
           const done = user.solved.includes(q.id);
           return (
