@@ -2,20 +2,12 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ACHIEVEMENTS, levelFor } from "@/lib/skillstreak/data";
 import { useUser } from "@/lib/skillstreak/store";
 import { useAuth } from "@/lib/skillstreak/auth";
+import { skillStats } from "@/lib/skillstreak/progress";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "Profile · SkillStreak" }] }),
   component: Profile,
 });
-
-const SKILLS = [
-  { label: "DSA", value: 0.8 },
-  { label: "SQL", value: 0.6 },
-  { label: "System Design", value: 0.45 },
-  { label: "OS", value: 0.55 },
-  { label: "Behavioral", value: 0.7 },
-  { label: "Resume", value: 0.5 },
-];
 
 function initials(n: string) {
   return n.split(" ").map((s) => s[0]).slice(0, 2).join("");
@@ -92,9 +84,17 @@ function Profile() {
 
       {/* Radar */}
       <section className="mt-6 px-5">
-        <p className="text-[10px] font-bold tracking-widest text-muted-foreground">SKILLS RADAR</p>
+        <div className="flex items-center justify-between">
+          <p className="text-[10px] font-bold tracking-widest text-muted-foreground">SKILLS RADAR</p>
+          <button
+            onClick={() => navigate({ to: "/share" })}
+            className="text-[10px] font-bold tracking-widest text-lime"
+          >
+            SHARE CARD →
+          </button>
+        </div>
         <div className="mt-3 flex justify-center rounded-2xl border border-border bg-card p-4">
-          <SkillsRadar />
+          <SkillsRadar stats={skillStats(user.solved)} />
         </div>
       </section>
 
@@ -205,12 +205,12 @@ function Profile() {
   );
 }
 
-function SkillsRadar() {
+function SkillsRadar({ stats }: { stats: { label: string; value: number }[] }) {
   const size = 220;
   const c = size / 2;
   const r = size / 2 - 24;
-  const n = SKILLS.length;
-  const pts = SKILLS.map((s, i) => {
+  const n = stats.length;
+  const pts = stats.map((s, i) => {
     const a = (Math.PI * 2 * i) / n - Math.PI / 2;
     return {
       x: c + Math.cos(a) * r * s.value,

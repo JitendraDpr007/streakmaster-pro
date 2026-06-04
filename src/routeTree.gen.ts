@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ShareRouteImport } from './routes/share'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as ResumeRouteImport } from './routes/resume'
 import { Route as ReferralsRouteImport } from './routes/referrals'
@@ -22,6 +23,11 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PacksSlugRouteImport } from './routes/packs.$slug'
 
+const ShareRoute = ShareRouteImport.update({
+  id: '/share',
+  path: '/share',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RoadmapRoute = RoadmapRouteImport.update({
   id: '/roadmap',
   path: '/roadmap',
@@ -95,6 +101,7 @@ export interface FileRoutesByFullPath {
   '/referrals': typeof ReferralsRoute
   '/resume': typeof ResumeRoute
   '/roadmap': typeof RoadmapRoute
+  '/share': typeof ShareRoute
   '/packs/$slug': typeof PacksSlugRoute
 }
 export interface FileRoutesByTo {
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/referrals': typeof ReferralsRoute
   '/resume': typeof ResumeRoute
   '/roadmap': typeof RoadmapRoute
+  '/share': typeof ShareRoute
   '/packs/$slug': typeof PacksSlugRoute
 }
 export interface FileRoutesById {
@@ -124,6 +132,7 @@ export interface FileRoutesById {
   '/referrals': typeof ReferralsRoute
   '/resume': typeof ResumeRoute
   '/roadmap': typeof RoadmapRoute
+  '/share': typeof ShareRoute
   '/packs/$slug': typeof PacksSlugRoute
 }
 export interface FileRouteTypes {
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/resume'
     | '/roadmap'
+    | '/share'
     | '/packs/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/resume'
     | '/roadmap'
+    | '/share'
     | '/packs/$slug'
   id:
     | '__root__'
@@ -168,6 +179,7 @@ export interface FileRouteTypes {
     | '/referrals'
     | '/resume'
     | '/roadmap'
+    | '/share'
     | '/packs/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -183,11 +195,19 @@ export interface RootRouteChildren {
   ReferralsRoute: typeof ReferralsRoute
   ResumeRoute: typeof ResumeRoute
   RoadmapRoute: typeof RoadmapRoute
+  ShareRoute: typeof ShareRoute
   PacksSlugRoute: typeof PacksSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/share': {
+      id: '/share'
+      path: '/share'
+      fullPath: '/share'
+      preLoaderRoute: typeof ShareRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/roadmap': {
       id: '/roadmap'
       path: '/roadmap'
@@ -287,6 +307,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReferralsRoute: ReferralsRoute,
   ResumeRoute: ResumeRoute,
   RoadmapRoute: RoadmapRoute,
+  ShareRoute: ShareRoute,
   PacksSlugRoute: PacksSlugRoute,
 }
 export const routeTree = rootRouteImport

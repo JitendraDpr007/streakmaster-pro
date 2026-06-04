@@ -38,6 +38,16 @@ interface Ctx {
   patch: (p: Partial<UserState>) => Promise<void>;
   recordSolve: (questionId: string, xp: number, selectedIndex?: number) => Promise<void>;
   ready: boolean;
+  streakMilestone: number | null;
+  clearStreakMilestone: () => void;
+}
+
+const STREAK_MILESTONES = [3, 7, 14, 30, 50, 100];
+function nextMilestoneHit(prev: number, next: number): number | null {
+  for (const m of STREAK_MILESTONES) {
+    if (prev < m && next >= m) return m;
+  }
+  return null;
 }
 
 const UserCtx = createContext<Ctx | null>(null);
@@ -67,6 +77,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const { user: authUser } = useAuth();
   const [user, setUser] = useState<UserState>(DEFAULT);
   const [ready, setReady] = useState(false);
+  const [streakMilestone, setStreakMilestone] = useState<number | null>(null);
 
   useEffect(() => {
     if (!authUser) {
@@ -147,6 +158,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
     const longest = Math.max(user.longestStreak, nextStreak);
     const newXp = user.xp + xp;
+    const milestone = nextMilestoneHit(user.streak, nextStreak);
+    if (milestone) setStreakMilestone(milestone);
 
     setUser((u) => {
       const hist = [...u.solvedHistory];
@@ -187,7 +200,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <UserCtx.Provider value={{ user, setUser, patch, recordSolve, ready }}>
+    <UserCtx.Provider value={{ user, setUser, patch, recordSolve, ready, streakMilestone, clearStreakMilestone: () => setStreakMilestone(null) }}>
       {children}
     </UserCtx.Provider>
   );
