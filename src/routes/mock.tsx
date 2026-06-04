@@ -20,7 +20,7 @@ type Stage = "setup" | "active" | "done";
 function MockPage() {
   const navigate = useNavigate();
   const { data: all = [] } = useQuestions();
-  const { addXP } = useUser();
+  const { user, patch } = useUser();
   const [stage, setStage] = useState<Stage>("setup");
   const [company, setCompany] = useState<string>("Google");
   const [picked, setPicked] = useState<typeof all>([]);
@@ -84,7 +84,7 @@ function MockPage() {
   // Award XP once when done
   useEffect(() => {
     if (stage === "done" && score.xp > 0) {
-      addXP(score.xp);
+      patch({ xp: user.xp + score.xp });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stage]);
