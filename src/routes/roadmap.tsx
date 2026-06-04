@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { ROADMAP } from "@/lib/skillstreak/data";
 import { COMPANY_PACKS } from "@/lib/skillstreak/packs";
+import { roadmapProgress } from "@/lib/skillstreak/progress";
 import { useUser } from "@/lib/skillstreak/store";
 
 export const Route = createFileRoute("/roadmap")({
@@ -12,6 +13,7 @@ export const Route = createFileRoute("/roadmap")({
 function Roadmap() {
   const { user } = useUser();
   const target = user.goalCompanies[0] ?? "Google";
+  const progress = roadmapProgress(user.solved);
 
   return (
     <div>
