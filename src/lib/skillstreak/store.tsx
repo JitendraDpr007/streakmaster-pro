@@ -200,7 +200,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <UserCtx.Provider value={{ user, setUser, patch, recordSolve, ready }}>
+    <UserCtx.Provider value={{ user, setUser, patch, recordSolve, ready, streakMilestone, clearStreakMilestone: () => setStreakMilestone(null) }}>
       {children}
     </UserCtx.Provider>
   );
