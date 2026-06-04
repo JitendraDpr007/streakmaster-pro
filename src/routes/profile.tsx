@@ -205,12 +205,12 @@ function Profile() {
   );
 }
 
-function SkillsRadar() {
+function SkillsRadar({ stats }: { stats: { label: string; value: number }[] }) {
   const size = 220;
   const c = size / 2;
   const r = size / 2 - 24;
-  const n = SKILLS.length;
-  const pts = SKILLS.map((s, i) => {
+  const n = stats.length;
+  const pts = stats.map((s, i) => {
     const a = (Math.PI * 2 * i) / n - Math.PI / 2;
     return {
       x: c + Math.cos(a) * r * s.value,
