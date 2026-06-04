@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { CompanyChip, DifficultyBadge, XpBadge } from "./Badges";
 import { useUser } from "@/lib/skillstreak/store";
+import { useBookmarks } from "@/lib/skillstreak/bookmarks";
 import type { Question } from "@/lib/skillstreak/data";
 
 export function ChallengeModal({
