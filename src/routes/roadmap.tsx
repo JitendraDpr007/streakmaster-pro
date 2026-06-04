@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { PACKS, ROADMAP } from "@/lib/skillstreak/data";
+import { ROADMAP } from "@/lib/skillstreak/data";
+import { COMPANY_PACKS } from "@/lib/skillstreak/packs";
 import { useUser } from "@/lib/skillstreak/store";
 
 export const Route = createFileRoute("/roadmap")({
