@@ -78,12 +78,25 @@ export function ChallengeModal({
         onClick={(e) => e.stopPropagation()}
         className="relative max-h-[92vh] w-full max-w-[430px] overflow-y-auto rounded-t-3xl border-t border-border bg-[#0F0F17] p-5 sm:rounded-3xl sm:border"
       >
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-full bg-white/5 text-muted-foreground transition hover:bg-white/10"
-        >
-          ✕
-        </button>
+        <div className="absolute right-4 top-4 flex items-center gap-2">
+          <button
+            onClick={() => toggle(question.id)}
+            title={bookmarked ? "Remove bookmark" : "Bookmark"}
+            className={`grid h-8 w-8 place-items-center rounded-full text-[14px] transition active:scale-90 ${
+              bookmarked
+                ? "bg-lime/15 text-lime"
+                : "bg-white/5 text-muted-foreground hover:bg-white/10"
+            }`}
+          >
+            {bookmarked ? "★" : "☆"}
+          </button>
+          <button
+            onClick={onClose}
+            className="grid h-8 w-8 place-items-center rounded-full bg-white/5 text-muted-foreground transition hover:bg-white/10"
+          >
+            ✕
+          </button>
+        </div>
 
         <div className="mb-3 flex items-center gap-2">
           {question.companies.slice(0, 2).map((c) => (
