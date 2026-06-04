@@ -62,10 +62,24 @@ function Arena() {
         <p className="text-[12px] text-muted-foreground">Pick your fight.</p>
       </header>
 
+      {company !== "All" && (
+        <div className="mx-5 mt-1 flex items-center justify-between rounded-xl border border-lime/30 bg-lime/[0.06] px-3 py-2">
+          <p className="text-[11px] text-lime">
+            🎯 Filtering by <span className="font-bold">{company}</span> pack
+          </p>
+          <button
+            onClick={() => setCompany("All")}
+            className="text-[10px] font-bold text-lime/70 active:scale-95"
+          >
+            Clear
+          </button>
+        </div>
+      )}
+
       {/* Company filter */}
-      <div className="no-scrollbar overflow-x-auto px-5">
+      <div className="no-scrollbar overflow-x-auto px-5 pt-2">
         <div className="flex gap-2 pb-3">
-          {["All", ...COMPANIES.slice(0, 7)].map((c) => (
+          {Array.from(new Set(["All", ...COMPANIES, company])).map((c) => (
             <button
               key={c}
               onClick={() => setCompany(c)}
