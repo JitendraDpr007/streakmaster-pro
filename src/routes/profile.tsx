@@ -84,9 +84,17 @@ function Profile() {
 
       {/* Radar */}
       <section className="mt-6 px-5">
-        <p className="text-[10px] font-bold tracking-widest text-muted-foreground">SKILLS RADAR</p>
+        <div className="flex items-center justify-between">
+          <p className="text-[10px] font-bold tracking-widest text-muted-foreground">SKILLS RADAR</p>
+          <button
+            onClick={() => navigate({ to: "/share" })}
+            className="text-[10px] font-bold tracking-widest text-lime"
+          >
+            SHARE CARD →
+          </button>
+        </div>
         <div className="mt-3 flex justify-center rounded-2xl border border-border bg-card p-4">
-          <SkillsRadar />
+          <SkillsRadar stats={skillStats(user.solved)} />
         </div>
       </section>
 
