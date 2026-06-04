@@ -140,6 +140,37 @@ function Profile() {
         </div>
       </section>
 
+      {/* Pro tools */}
+      <section className="mt-6 px-5">
+        <p className="text-[10px] font-bold tracking-widest text-muted-foreground">PRO TOOLS</p>
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          <button
+            onClick={() => navigate({ to: "/mock" })}
+            className="rounded-2xl border border-white/10 bg-card p-3 text-left active:scale-[0.97]"
+          >
+            <div className="text-xl">⏱</div>
+            <div className="mt-1 text-[12px] font-bold">Mock</div>
+            <div className="text-[9px] text-muted-foreground">45-min timed</div>
+          </button>
+          <button
+            onClick={() => navigate({ to: "/resume" })}
+            className="rounded-2xl border border-lime/30 bg-lime/5 p-3 text-left active:scale-[0.97]"
+          >
+            <div className="text-xl">📄</div>
+            <div className="mt-1 text-[12px] font-bold">Resume AI</div>
+            <div className="text-[9px] text-lime">ATS score</div>
+          </button>
+          <button
+            onClick={() => navigate({ to: "/referrals" })}
+            className="rounded-2xl border border-cyan/30 bg-cyan/5 p-3 text-left active:scale-[0.97]"
+          >
+            <div className="text-xl">🤝</div>
+            <div className="mt-1 text-[12px] font-bold">Referrals</div>
+            <div className="text-[9px] text-cyan">Community</div>
+          </button>
+        </div>
+      </section>
+
       <section className="mt-8 space-y-2 px-5">
         {authUser?.email && (
           <p className="text-center text-[11px] text-muted-foreground">
