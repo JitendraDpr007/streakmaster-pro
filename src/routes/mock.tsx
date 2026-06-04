@@ -142,6 +142,30 @@ function MockPage() {
             </div>
           </div>
 
+          <div>
+            <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              Focus area
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {["All", "DSA", "SQL", "System Design", "Behavioral"].map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setCat(c)}
+                  className={`rounded-full border px-3 py-1.5 text-[11px] font-semibold transition ${
+                    cat === c
+                      ? "border-cyan bg-cyan/10 text-cyan"
+                      : "border-white/10 bg-card text-muted-foreground"
+                  }`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 font-mono text-[10px] text-muted-foreground">
+              Pool: {all.filter((q) => (company === "All" || q.companies.includes(company)) && (cat === "All" || q.category === cat)).length} questions
+            </p>
+          </div>
+
           <div className="glass rounded-2xl p-4 text-[12px] leading-relaxed">
             <p className="font-bold">Rules</p>
             <ul className="mt-2 space-y-1 text-muted-foreground">
