@@ -1,14 +1,21 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { z } from "zod";
 import { useQuestions } from "@/lib/skillstreak/questions";
 import { COMPANIES } from "@/lib/skillstreak/data";
 import { useUser } from "@/lib/skillstreak/store";
+
+const mockSearch = z.object({
+  company: z.string().optional(),
+  cat: z.string().optional(),
+});
 
 export const Route = createFileRoute("/mock")({
   head: () => ({
     meta: [{ title: "Mock Interview · SkillStreak" }],
   }),
+  validateSearch: mockSearch,
   component: MockPage,
 });
 
@@ -19,10 +26,18 @@ type Stage = "setup" | "active" | "done";
 
 function MockPage() {
   const navigate = useNavigate();
+  const search = Route.useSearch();
   const { data: all = [] } = useQuestions();
   const { user, patch } = useUser();
   const [stage, setStage] = useState<Stage>("setup");
-  const [company, setCompany] = useState<string>("Google");
+  const [company, setCompany] = useState<string>(search.company ?? "Google");
+  const [cat, setCat] = useState<string>(search.cat ?? "All");
+
+  // sync from incoming search params
+  useEffect(() => {
+    if (search.company) setCompany(search.company);
+    if (search.cat) setCat(search.cat);
+  }, [search.company, search.cat]);
   const [picked, setPicked] = useState<typeof all>([]);
   const [idx, setIdx] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>([]);
