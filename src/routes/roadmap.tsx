@@ -29,9 +29,11 @@ function Roadmap() {
         <p className="text-[10px] font-bold tracking-widest text-muted-foreground">DSA FUNDAMENTALS</p>
         <div className="mt-3 space-y-2">
           {ROADMAP.map((node, i) => {
-            const isDone = node.status === "completed";
-            const isLocked = node.status === "locked";
-            const isActive = node.status === "in_progress";
+            const live = progress[node.id] ?? { done: 0, total: 0, pct: 0 };
+            const pct = live.pct;
+            const isDone = pct >= 100;
+            const isActive = pct > 0 && pct < 100;
+            const isLocked = pct === 0 && i > 0 && (progress[ROADMAP[i - 1].id]?.pct ?? 0) < 60;
             return (
               <motion.div
                 key={node.id}
@@ -55,17 +57,18 @@ function Roadmap() {
                 </div>
                 <div className="flex-1">
                   <p className="text-[14px] font-bold">{node.title}</p>
+                  <p className="font-mono-num mt-0.5 text-[10px] text-muted-foreground">
+                    {live.done} / {Math.max(live.total, 5)} solved
+                  </p>
                   <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-white/5">
                     <div
-                      className={`h-full rounded-full ${
-                        isDone ? "bg-easy" : "bg-lime"
-                      }`}
-                      style={{ width: `${node.progress}%` }}
+                      className={`h-full rounded-full ${isDone ? "bg-easy" : "bg-lime"}`}
+                      style={{ width: `${pct}%` }}
                     />
                   </div>
                 </div>
                 <p className="font-mono-num text-[12px] font-bold text-muted-foreground">
-                  {node.progress}%
+                  {pct}%
                 </p>
               </motion.div>
             );
