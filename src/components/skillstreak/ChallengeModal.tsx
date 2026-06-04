@@ -14,10 +14,26 @@ export function ChallengeModal({
   onClose: () => void;
 }) {
   const { user, recordSolve } = useUser();
+  const { isBookmarked, toggle, setNote, items } = useBookmarks();
+  const bookmarked = isBookmarked(question.id);
+  const existingNote = items.find((b) => b.question_id === question.id)?.note ?? "";
+  const [note, setNoteLocal] = useState(existingNote);
+  const [noteDirty, setNoteDirty] = useState(false);
   const alreadySolved = user.solved.includes(question.id);
   const [selected, setSelected] = useState<number | null>(alreadySolved ? question.correctIndex : null);
   const [revealed, setRevealed] = useState(alreadySolved);
   const [floatXp, setFloatXp] = useState(false);
+
+  useEffect(() => {
+    setNoteLocal(existingNote);
+    setNoteDirty(false);
+  }, [existingNote]);
+
+  const saveNote = () => {
+    if (!noteDirty) return;
+    setNote(question.id, note.trim());
+    setNoteDirty(false);
+  };
 
   const pick = (i: number) => {
     if (revealed) return;
