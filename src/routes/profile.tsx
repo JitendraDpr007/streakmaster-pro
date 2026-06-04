@@ -2,20 +2,12 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ACHIEVEMENTS, levelFor } from "@/lib/skillstreak/data";
 import { useUser } from "@/lib/skillstreak/store";
 import { useAuth } from "@/lib/skillstreak/auth";
+import { skillStats } from "@/lib/skillstreak/progress";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({ meta: [{ title: "Profile · SkillStreak" }] }),
   component: Profile,
 });
-
-const SKILLS = [
-  { label: "DSA", value: 0.8 },
-  { label: "SQL", value: 0.6 },
-  { label: "System Design", value: 0.45 },
-  { label: "OS", value: 0.55 },
-  { label: "Behavioral", value: 0.7 },
-  { label: "Resume", value: 0.5 },
-];
 
 function initials(n: string) {
   return n.split(" ").map((s) => s[0]).slice(0, 2).join("");
