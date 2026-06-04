@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { PACKS, ROADMAP } from "@/lib/skillstreak/data";
+import { ROADMAP } from "@/lib/skillstreak/data";
+import { COMPANY_PACKS } from "@/lib/skillstreak/packs";
 import { useUser } from "@/lib/skillstreak/store";
 
 export const Route = createFileRoute("/roadmap")({
@@ -76,19 +77,26 @@ function Roadmap() {
           COMPANY PREP PACKS
         </p>
         <div className="mt-3 space-y-3">
-          {PACKS.map((p) => {
-            const pct = Math.round((p.progress / p.questions) * 100);
+          {COMPANY_PACKS.map((p) => {
             const total = p.mix.reduce((a, b) => a + b, 0);
             return (
-              <div key={p.company} className="rounded-2xl border border-border bg-card p-4">
+              <Link
+                key={p.slug}
+                to="/packs/$slug"
+                params={{ slug: p.slug }}
+                className="block rounded-2xl border border-border bg-card p-4 transition active:scale-[0.98] hover:border-lime/40"
+              >
                 <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-[16px] font-bold">{p.company} {p.role} Pack</p>
-                    <p className="font-mono-num mt-0.5 text-[11px] text-muted-foreground">
-                      {p.questions} questions · {p.topics} topics
-                    </p>
+                  <div className="flex items-center gap-2.5">
+                    <div className="grid h-9 w-9 place-items-center rounded-xl bg-white/5 text-lg">{p.logo}</div>
+                    <div>
+                      <p className="text-[15px] font-bold">{p.company} <span className="text-muted-foreground">· {p.role}</span></p>
+                      <p className="font-mono-num mt-0.5 text-[11px] text-muted-foreground">
+                        {p.totalQuestions} questions · {p.loop.length} rounds
+                      </p>
+                    </div>
                   </div>
-                  <p className="font-mono-num text-[13px] font-bold text-lime">{pct}%</p>
+                  <span className="text-[10px] font-bold text-lime">→</span>
                 </div>
 
                 <div className="mt-3 flex h-2 overflow-hidden rounded-full bg-white/5">
@@ -97,10 +105,12 @@ function Roadmap() {
                   <div className="bg-hard" style={{ width: `${(p.mix[2] / total) * 100}%` }} />
                 </div>
                 <div className="mt-2 flex items-center justify-between text-[10px] text-muted-foreground">
-                  <span>🟢 {p.mix[0]} Easy · 🟡 {p.mix[1]} Med · 🔴 {p.mix[2]} Hard</span>
-                  <span>~{Math.ceil(p.questions / 3)}d</span>
+                  <span>🟢 {p.mix[0]} · 🟡 {p.mix[1]} · 🔴 {p.mix[2]}</span>
+                  <span className={p.difficulty === "BRUTAL" ? "text-red-400" : p.difficulty === "HARD" ? "text-orange-400" : "text-yellow-400"}>
+                    {p.difficulty}
+                  </span>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
