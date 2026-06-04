@@ -10,8 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
+import { Route as ResumeRouteImport } from './routes/resume'
+import { Route as ReferralsRouteImport } from './routes/referrals'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as MockRouteImport } from './routes/mock'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArenaRouteImport } from './routes/arena'
@@ -24,6 +27,16 @@ const RoadmapRoute = RoadmapRouteImport.update({
   path: '/roadmap',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResumeRoute = ResumeRouteImport.update({
+  id: '/resume',
+  path: '/resume',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReferralsRoute = ReferralsRouteImport.update({
+  id: '/referrals',
+  path: '/referrals',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -32,6 +45,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const OnboardingRoute = OnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MockRoute = MockRouteImport.update({
+  id: '/mock',
+  path: '/mock',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LeaderboardRoute = LeaderboardRouteImport.update({
@@ -71,8 +89,11 @@ export interface FileRoutesByFullPath {
   '/arena': typeof ArenaRoute
   '/auth': typeof AuthRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/mock': typeof MockRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
+  '/referrals': typeof ReferralsRoute
+  '/resume': typeof ResumeRoute
   '/roadmap': typeof RoadmapRoute
   '/packs/$slug': typeof PacksSlugRoute
 }
@@ -82,8 +103,11 @@ export interface FileRoutesByTo {
   '/arena': typeof ArenaRoute
   '/auth': typeof AuthRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/mock': typeof MockRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
+  '/referrals': typeof ReferralsRoute
+  '/resume': typeof ResumeRoute
   '/roadmap': typeof RoadmapRoute
   '/packs/$slug': typeof PacksSlugRoute
 }
@@ -94,8 +118,11 @@ export interface FileRoutesById {
   '/arena': typeof ArenaRoute
   '/auth': typeof AuthRoute
   '/leaderboard': typeof LeaderboardRoute
+  '/mock': typeof MockRoute
   '/onboarding': typeof OnboardingRoute
   '/profile': typeof ProfileRoute
+  '/referrals': typeof ReferralsRoute
+  '/resume': typeof ResumeRoute
   '/roadmap': typeof RoadmapRoute
   '/packs/$slug': typeof PacksSlugRoute
 }
@@ -107,8 +134,11 @@ export interface FileRouteTypes {
     | '/arena'
     | '/auth'
     | '/leaderboard'
+    | '/mock'
     | '/onboarding'
     | '/profile'
+    | '/referrals'
+    | '/resume'
     | '/roadmap'
     | '/packs/$slug'
   fileRoutesByTo: FileRoutesByTo
@@ -118,8 +148,11 @@ export interface FileRouteTypes {
     | '/arena'
     | '/auth'
     | '/leaderboard'
+    | '/mock'
     | '/onboarding'
     | '/profile'
+    | '/referrals'
+    | '/resume'
     | '/roadmap'
     | '/packs/$slug'
   id:
@@ -129,8 +162,11 @@ export interface FileRouteTypes {
     | '/arena'
     | '/auth'
     | '/leaderboard'
+    | '/mock'
     | '/onboarding'
     | '/profile'
+    | '/referrals'
+    | '/resume'
     | '/roadmap'
     | '/packs/$slug'
   fileRoutesById: FileRoutesById
@@ -141,8 +177,11 @@ export interface RootRouteChildren {
   ArenaRoute: typeof ArenaRoute
   AuthRoute: typeof AuthRoute
   LeaderboardRoute: typeof LeaderboardRoute
+  MockRoute: typeof MockRoute
   OnboardingRoute: typeof OnboardingRoute
   ProfileRoute: typeof ProfileRoute
+  ReferralsRoute: typeof ReferralsRoute
+  ResumeRoute: typeof ResumeRoute
   RoadmapRoute: typeof RoadmapRoute
   PacksSlugRoute: typeof PacksSlugRoute
 }
@@ -154,6 +193,20 @@ declare module '@tanstack/react-router' {
       path: '/roadmap'
       fullPath: '/roadmap'
       preLoaderRoute: typeof RoadmapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/resume': {
+      id: '/resume'
+      path: '/resume'
+      fullPath: '/resume'
+      preLoaderRoute: typeof ResumeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/referrals': {
+      id: '/referrals'
+      path: '/referrals'
+      fullPath: '/referrals'
+      preLoaderRoute: typeof ReferralsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -168,6 +221,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mock': {
+      id: '/mock'
+      path: '/mock'
+      fullPath: '/mock'
+      preLoaderRoute: typeof MockRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/leaderboard': {
@@ -221,8 +281,11 @@ const rootRouteChildren: RootRouteChildren = {
   ArenaRoute: ArenaRoute,
   AuthRoute: AuthRoute,
   LeaderboardRoute: LeaderboardRoute,
+  MockRoute: MockRoute,
   OnboardingRoute: OnboardingRoute,
   ProfileRoute: ProfileRoute,
+  ReferralsRoute: ReferralsRoute,
+  ResumeRoute: ResumeRoute,
   RoadmapRoute: RoadmapRoute,
   PacksSlugRoute: PacksSlugRoute,
 }
