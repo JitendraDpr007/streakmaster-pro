@@ -149,6 +149,45 @@ export type Database = {
         }
         Relationships: []
       }
+      referrals: {
+        Row: {
+          author_name: string
+          company: string
+          contact: string
+          created_at: string
+          id: string
+          kind: string
+          note: string
+          role: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          author_name: string
+          company: string
+          contact: string
+          created_at?: string
+          id?: string
+          kind: string
+          note: string
+          role: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          author_name?: string
+          company?: string
+          contact?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          note?: string
+          role?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       submissions: {
         Row: {
           correct: boolean
