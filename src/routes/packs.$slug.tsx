@@ -175,15 +175,21 @@ function PackDetail() {
       </div>
 
       {/* CTA */}
-      <div className="mt-6 px-5">
+      <div className="mt-6 space-y-2 px-5">
         <button
           onClick={() => navigate({ to: "/arena", search: { company: pack.company } })}
           className="w-full rounded-2xl bg-lime py-4 text-sm font-bold text-primary-foreground active:scale-[0.98]"
         >
           Start {pack.company} prep →
         </button>
-        <p className="mt-2 text-center text-[10px] text-muted-foreground">
-          Questions are tagged with {pack.company} in the Arena
+        <button
+          onClick={() => navigate({ to: "/mock", search: { company: pack.company } })}
+          className="w-full rounded-2xl border border-lime/30 bg-lime/5 py-3 text-sm font-bold text-lime active:scale-[0.98]"
+        >
+          ⏱ Run timed {pack.company} mock interview
+        </button>
+        <p className="pt-1 text-center text-[10px] text-muted-foreground">
+          Questions tagged with {pack.company} drive both flows
         </p>
       </div>
     </div>

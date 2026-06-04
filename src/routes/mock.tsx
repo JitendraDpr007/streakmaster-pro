@@ -1,14 +1,21 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { z } from "zod";
 import { useQuestions } from "@/lib/skillstreak/questions";
 import { COMPANIES } from "@/lib/skillstreak/data";
 import { useUser } from "@/lib/skillstreak/store";
+
+const mockSearch = z.object({
+  company: z.string().optional(),
+  cat: z.string().optional(),
+});
 
 export const Route = createFileRoute("/mock")({
   head: () => ({
     meta: [{ title: "Mock Interview · SkillStreak" }],
   }),
+  validateSearch: mockSearch,
   component: MockPage,
 });
 
@@ -19,10 +26,18 @@ type Stage = "setup" | "active" | "done";
 
 function MockPage() {
   const navigate = useNavigate();
+  const search = Route.useSearch();
   const { data: all = [] } = useQuestions();
   const { user, patch } = useUser();
   const [stage, setStage] = useState<Stage>("setup");
-  const [company, setCompany] = useState<string>("Google");
+  const [company, setCompany] = useState<string>(search.company ?? "Google");
+  const [cat, setCat] = useState<string>(search.cat ?? "All");
+
+  // sync from incoming search params
+  useEffect(() => {
+    if (search.company) setCompany(search.company);
+    if (search.cat) setCat(search.cat);
+  }, [search.company, search.cat]);
   const [picked, setPicked] = useState<typeof all>([]);
   const [idx, setIdx] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>([]);
@@ -46,7 +61,8 @@ function MockPage() {
 
   const start = () => {
     if (all.length === 0) return;
-    const pool = all.filter((q) => q.companies.includes(company));
+    let pool = company === "All" ? all : all.filter((q) => q.companies.includes(company));
+    if (cat !== "All") pool = pool.filter((q) => q.category === cat);
     const source = pool.length >= Q_COUNT ? pool : all;
     const shuffled = [...source].sort(() => Math.random() - 0.5).slice(0, Q_COUNT);
     setPicked(shuffled);
@@ -124,6 +140,30 @@ function MockPage() {
                 </button>
               ))}
             </div>
+          </div>
+
+          <div>
+            <p className="mb-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              Focus area
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {["All", "DSA", "SQL", "System Design", "Behavioral"].map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setCat(c)}
+                  className={`rounded-full border px-3 py-1.5 text-[11px] font-semibold transition ${
+                    cat === c
+                      ? "border-cyan bg-cyan/10 text-cyan"
+                      : "border-white/10 bg-card text-muted-foreground"
+                  }`}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+            <p className="mt-2 font-mono text-[10px] text-muted-foreground">
+              Pool: {all.filter((q) => (company === "All" || q.companies.includes(company)) && (cat === "All" || q.category === cat)).length} questions
+            </p>
           </div>
 
           <div className="glass rounded-2xl p-4 text-[12px] leading-relaxed">
