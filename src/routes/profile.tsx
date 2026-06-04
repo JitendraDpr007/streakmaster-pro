@@ -143,13 +143,13 @@ function Profile() {
       {/* Pro tools */}
       <section className="mt-6 px-5">
         <p className="text-[10px] font-bold tracking-widest text-muted-foreground">PRO TOOLS</p>
-        <div className="mt-3 grid grid-cols-3 gap-2">
+        <div className="mt-3 grid grid-cols-2 gap-2">
           <button
             onClick={() => navigate({ to: "/mock" })}
             className="rounded-2xl border border-white/10 bg-card p-3 text-left active:scale-[0.97]"
           >
             <div className="text-xl">⏱</div>
-            <div className="mt-1 text-[12px] font-bold">Mock</div>
+            <div className="mt-1 text-[12px] font-bold">Mock Interview</div>
             <div className="text-[9px] text-muted-foreground">45-min timed</div>
           </button>
           <button
@@ -167,6 +167,14 @@ function Profile() {
             <div className="text-xl">🤝</div>
             <div className="mt-1 text-[12px] font-bold">Referrals</div>
             <div className="text-[9px] text-cyan">Community</div>
+          </button>
+          <button
+            onClick={() => navigate({ to: "/bookmarks" })}
+            className="rounded-2xl border border-white/10 bg-card p-3 text-left active:scale-[0.97]"
+          >
+            <div className="text-xl">★</div>
+            <div className="mt-1 text-[12px] font-bold">Bookmarks</div>
+            <div className="text-[9px] text-muted-foreground">Saved + notes</div>
           </button>
         </div>
       </section>
