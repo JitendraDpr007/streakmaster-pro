@@ -230,6 +230,28 @@ export function ChallengeModal({
                 </div>
               )}
 
+              <div className="mt-6">
+                <p className="mb-2 text-[10px] font-bold tracking-widest text-muted-foreground">
+                  📝 YOUR NOTES (private)
+                </p>
+                <textarea
+                  value={note}
+                  onChange={(e) => {
+                    setNoteLocal(e.target.value);
+                    setNoteDirty(true);
+                  }}
+                  onBlur={saveNote}
+                  rows={3}
+                  placeholder="Pattern, gotcha, or rewrite to remember…"
+                  className="w-full rounded-xl border border-border bg-white/[0.03] p-3 text-[12px] leading-snug outline-none focus:border-lime"
+                />
+                {noteDirty && (
+                  <p className="mt-1 text-right text-[10px] text-lime">
+                    Saves when you tap away.
+                  </p>
+                )}
+              </div>
+
               <button
                 onClick={onClose}
                 className="mt-6 w-full rounded-xl bg-lime py-3 text-sm font-bold text-primary-foreground transition active:scale-[0.98]"
