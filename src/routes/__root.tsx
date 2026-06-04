@@ -139,7 +139,9 @@ function RootComponent() {
               </AuthGate>
             </div>
             <BottomNav />
+            <StreakCelebration />
           </div>
+
         </UserProvider>
       </AuthProvider>
     </QueryClientProvider>
