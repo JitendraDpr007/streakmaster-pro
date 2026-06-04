@@ -77,6 +77,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const { user: authUser } = useAuth();
   const [user, setUser] = useState<UserState>(DEFAULT);
   const [ready, setReady] = useState(false);
+  const [streakMilestone, setStreakMilestone] = useState<number | null>(null);
 
   useEffect(() => {
     if (!authUser) {
