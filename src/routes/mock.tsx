@@ -61,7 +61,8 @@ function MockPage() {
 
   const start = () => {
     if (all.length === 0) return;
-    const pool = all.filter((q) => q.companies.includes(company));
+    let pool = company === "All" ? all : all.filter((q) => q.companies.includes(company));
+    if (cat !== "All") pool = pool.filter((q) => q.category === cat);
     const source = pool.length >= Q_COUNT ? pool : all;
     const shuffled = [...source].sort(() => Math.random() - 0.5).slice(0, Q_COUNT);
     setPicked(shuffled);
