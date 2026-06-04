@@ -158,6 +158,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
     }
     const longest = Math.max(user.longestStreak, nextStreak);
     const newXp = user.xp + xp;
+    const milestone = nextMilestoneHit(user.streak, nextStreak);
+    if (milestone) setStreakMilestone(milestone);
 
     setUser((u) => {
       const hist = [...u.solvedHistory];
