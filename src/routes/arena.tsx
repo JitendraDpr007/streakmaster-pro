@@ -1,5 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { z } from "zod";
 import { AnimatePresence, motion } from "framer-motion";
 import { CATEGORY_ICON, COMPANIES, type Category } from "@/lib/skillstreak/data";
 import { useQuestions } from "@/lib/skillstreak/questions";
@@ -8,16 +9,43 @@ import { ChallengeModal } from "@/components/skillstreak/ChallengeModal";
 
 const CATS: (Category | "All")[] = ["All", "DSA", "SQL", "System Design", "Behavioral"];
 
+const arenaSearch = z.object({
+  company: z.string().optional(),
+  cat: z.string().optional(),
+});
+
 export const Route = createFileRoute("/arena")({
   head: () => ({ meta: [{ title: "Arena · SkillStreak" }] }),
+  validateSearch: arenaSearch,
   component: Arena,
 });
 
 function Arena() {
-  const [company, setCompany] = useState("All");
-  const [cat, setCat] = useState<(typeof CATS)[number]>("All");
+  const search = Route.useSearch();
+  const navigate = useNavigate();
+  const [company, setCompany] = useState(search.company ?? "All");
+  const [cat, setCat] = useState<(typeof CATS)[number]>(
+    (CATS as string[]).includes(search.cat ?? "") ? (search.cat as Category) : "All",
+  );
   const [openId, setOpenId] = useState<string | null>(null);
   const { data: QUESTIONS = [] } = useQuestions();
+
+  // keep state in sync if user navigates here with new params
+  useEffect(() => {
+    if (search.company && search.company !== company) setCompany(search.company);
+  }, [search.company]);
+
+  // push state back to URL so the filter is shareable
+  useEffect(() => {
+    navigate({
+      to: "/arena",
+      search: {
+        company: company === "All" ? undefined : company,
+        cat: cat === "All" ? undefined : cat,
+      },
+      replace: true,
+    });
+  }, [company, cat, navigate]);
 
   const filtered = QUESTIONS.filter(
     (q) =>
@@ -34,10 +62,24 @@ function Arena() {
         <p className="text-[12px] text-muted-foreground">Pick your fight.</p>
       </header>
 
+      {company !== "All" && (
+        <div className="mx-5 mt-1 flex items-center justify-between rounded-xl border border-lime/30 bg-lime/[0.06] px-3 py-2">
+          <p className="text-[11px] text-lime">
+            🎯 Filtering by <span className="font-bold">{company}</span> pack
+          </p>
+          <button
+            onClick={() => setCompany("All")}
+            className="text-[10px] font-bold text-lime/70 active:scale-95"
+          >
+            Clear
+          </button>
+        </div>
+      )}
+
       {/* Company filter */}
-      <div className="no-scrollbar overflow-x-auto px-5">
+      <div className="no-scrollbar overflow-x-auto px-5 pt-2">
         <div className="flex gap-2 pb-3">
-          {["All", ...COMPANIES.slice(0, 7)].map((c) => (
+          {Array.from(new Set(["All", ...COMPANIES, company])).map((c) => (
             <button
               key={c}
               onClick={() => setCompany(c)}

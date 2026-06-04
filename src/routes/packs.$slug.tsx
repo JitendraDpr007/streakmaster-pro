@@ -177,7 +177,7 @@ function PackDetail() {
       {/* CTA */}
       <div className="mt-6 px-5">
         <button
-          onClick={() => navigate({ to: "/arena" })}
+          onClick={() => navigate({ to: "/arena", search: { company: pack.company } })}
           className="w-full rounded-2xl bg-lime py-4 text-sm font-bold text-primary-foreground active:scale-[0.98]"
         >
           Start {pack.company} prep →

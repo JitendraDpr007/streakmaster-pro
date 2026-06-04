@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { CompanyChip, DifficultyBadge, XpBadge } from "./Badges";
 import { useUser } from "@/lib/skillstreak/store";
+import { useBookmarks } from "@/lib/skillstreak/bookmarks";
 import type { Question } from "@/lib/skillstreak/data";
 
 export function ChallengeModal({
@@ -13,10 +14,26 @@ export function ChallengeModal({
   onClose: () => void;
 }) {
   const { user, recordSolve } = useUser();
+  const { isBookmarked, toggle, setNote, items } = useBookmarks();
+  const bookmarked = isBookmarked(question.id);
+  const existingNote = items.find((b) => b.question_id === question.id)?.note ?? "";
+  const [note, setNoteLocal] = useState(existingNote);
+  const [noteDirty, setNoteDirty] = useState(false);
   const alreadySolved = user.solved.includes(question.id);
   const [selected, setSelected] = useState<number | null>(alreadySolved ? question.correctIndex : null);
   const [revealed, setRevealed] = useState(alreadySolved);
   const [floatXp, setFloatXp] = useState(false);
+
+  useEffect(() => {
+    setNoteLocal(existingNote);
+    setNoteDirty(false);
+  }, [existingNote]);
+
+  const saveNote = () => {
+    if (!noteDirty) return;
+    setNote(question.id, note.trim());
+    setNoteDirty(false);
+  };
 
   const pick = (i: number) => {
     if (revealed) return;
@@ -61,12 +78,25 @@ export function ChallengeModal({
         onClick={(e) => e.stopPropagation()}
         className="relative max-h-[92vh] w-full max-w-[430px] overflow-y-auto rounded-t-3xl border-t border-border bg-[#0F0F17] p-5 sm:rounded-3xl sm:border"
       >
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-full bg-white/5 text-muted-foreground transition hover:bg-white/10"
-        >
-          ✕
-        </button>
+        <div className="absolute right-4 top-4 flex items-center gap-2">
+          <button
+            onClick={() => toggle(question.id)}
+            title={bookmarked ? "Remove bookmark" : "Bookmark"}
+            className={`grid h-8 w-8 place-items-center rounded-full text-[14px] transition active:scale-90 ${
+              bookmarked
+                ? "bg-lime/15 text-lime"
+                : "bg-white/5 text-muted-foreground hover:bg-white/10"
+            }`}
+          >
+            {bookmarked ? "★" : "☆"}
+          </button>
+          <button
+            onClick={onClose}
+            className="grid h-8 w-8 place-items-center rounded-full bg-white/5 text-muted-foreground transition hover:bg-white/10"
+          >
+            ✕
+          </button>
+        </div>
 
         <div className="mb-3 flex items-center gap-2">
           {question.companies.slice(0, 2).map((c) => (
@@ -199,6 +229,28 @@ export function ChallengeModal({
                   </div>
                 </div>
               )}
+
+              <div className="mt-6">
+                <p className="mb-2 text-[10px] font-bold tracking-widest text-muted-foreground">
+                  📝 YOUR NOTES (private)
+                </p>
+                <textarea
+                  value={note}
+                  onChange={(e) => {
+                    setNoteLocal(e.target.value);
+                    setNoteDirty(true);
+                  }}
+                  onBlur={saveNote}
+                  rows={3}
+                  placeholder="Pattern, gotcha, or rewrite to remember…"
+                  className="w-full rounded-xl border border-border bg-white/[0.03] p-3 text-[12px] leading-snug outline-none focus:border-lime"
+                />
+                {noteDirty && (
+                  <p className="mt-1 text-right text-[10px] text-lime">
+                    Saves when you tap away.
+                  </p>
+                )}
+              </div>
 
               <button
                 onClick={onClose}

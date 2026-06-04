@@ -17,6 +17,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as MockRouteImport } from './routes/mock'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
+import { Route as BookmarksRouteImport } from './routes/bookmarks'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArenaRouteImport } from './routes/arena'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -63,6 +64,11 @@ const LeaderboardRoute = LeaderboardRouteImport.update({
   path: '/leaderboard',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BookmarksRoute = BookmarksRouteImport.update({
+  id: '/bookmarks',
+  path: '/bookmarks',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
@@ -94,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/arena': typeof ArenaRoute
   '/auth': typeof AuthRoute
+  '/bookmarks': typeof BookmarksRoute
   '/leaderboard': typeof LeaderboardRoute
   '/mock': typeof MockRoute
   '/onboarding': typeof OnboardingRoute
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/arena': typeof ArenaRoute
   '/auth': typeof AuthRoute
+  '/bookmarks': typeof BookmarksRoute
   '/leaderboard': typeof LeaderboardRoute
   '/mock': typeof MockRoute
   '/onboarding': typeof OnboardingRoute
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/arena': typeof ArenaRoute
   '/auth': typeof AuthRoute
+  '/bookmarks': typeof BookmarksRoute
   '/leaderboard': typeof LeaderboardRoute
   '/mock': typeof MockRoute
   '/onboarding': typeof OnboardingRoute
@@ -142,6 +151,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/arena'
     | '/auth'
+    | '/bookmarks'
     | '/leaderboard'
     | '/mock'
     | '/onboarding'
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/arena'
     | '/auth'
+    | '/bookmarks'
     | '/leaderboard'
     | '/mock'
     | '/onboarding'
@@ -172,6 +183,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/arena'
     | '/auth'
+    | '/bookmarks'
     | '/leaderboard'
     | '/mock'
     | '/onboarding'
@@ -188,6 +200,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   ArenaRoute: typeof ArenaRoute
   AuthRoute: typeof AuthRoute
+  BookmarksRoute: typeof BookmarksRoute
   LeaderboardRoute: typeof LeaderboardRoute
   MockRoute: typeof MockRoute
   OnboardingRoute: typeof OnboardingRoute
@@ -257,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LeaderboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bookmarks': {
+      id: '/bookmarks'
+      path: '/bookmarks'
+      fullPath: '/bookmarks'
+      preLoaderRoute: typeof BookmarksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -300,6 +320,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   ArenaRoute: ArenaRoute,
   AuthRoute: AuthRoute,
+  BookmarksRoute: BookmarksRoute,
   LeaderboardRoute: LeaderboardRoute,
   MockRoute: MockRoute,
   OnboardingRoute: OnboardingRoute,
