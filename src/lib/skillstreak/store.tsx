@@ -38,6 +38,16 @@ interface Ctx {
   patch: (p: Partial<UserState>) => Promise<void>;
   recordSolve: (questionId: string, xp: number, selectedIndex?: number) => Promise<void>;
   ready: boolean;
+  streakMilestone: number | null;
+  clearStreakMilestone: () => void;
+}
+
+const STREAK_MILESTONES = [3, 7, 14, 30, 50, 100];
+function nextMilestoneHit(prev: number, next: number): number | null {
+  for (const m of STREAK_MILESTONES) {
+    if (prev < m && next >= m) return m;
+  }
+  return null;
 }
 
 const UserCtx = createContext<Ctx | null>(null);
