@@ -395,6 +395,19 @@ function QuestionForm({
         </div>
 
         <div className="space-y-3 text-sm">
+          <Field label="Question Type">
+            <select
+              value={q.type}
+              onChange={(e) => set("type", e.target.value as Question["type"])}
+              className="input"
+            >
+              <option value="mcq">MCQ (Quick Quiz)</option>
+              <option value="coding">Coding (LeetCode/GFG link)</option>
+              <option value="sql">SQL (in-browser editor)</option>
+              <option value="system_design">System Design (HLD/LLD walkthrough)</option>
+            </select>
+          </Field>
+
           <Field label="Title">
             <input value={q.title} onChange={(e) => set("title", e.target.value)} className="input" />
           </Field>
