@@ -61,9 +61,11 @@ function MockPage() {
 
   const start = () => {
     if (all.length === 0) return;
-    let pool = company === "All" ? all : all.filter((q) => q.companies.includes(company));
+    // Mock interview is timed MCQ format only
+    let pool = all.filter((q) => q.type === "mcq");
+    if (company !== "All") pool = pool.filter((q) => q.companies.includes(company));
     if (cat !== "All") pool = pool.filter((q) => q.category === cat);
-    const source = pool.length >= Q_COUNT ? pool : all;
+    const source = pool.length >= Q_COUNT ? pool : all.filter((q) => q.type === "mcq");
     const shuffled = [...source].sort(() => Math.random() - 0.5).slice(0, Q_COUNT);
     setPicked(shuffled);
     setAnswers(Array(shuffled.length).fill(null));
@@ -162,7 +164,7 @@ function MockPage() {
               ))}
             </div>
             <p className="mt-2 font-mono text-[10px] text-muted-foreground">
-              Pool: {all.filter((q) => (company === "All" || q.companies.includes(company)) && (cat === "All" || q.category === cat)).length} questions
+              Pool: {all.filter((q) => q.type === "mcq" && (company === "All" || q.companies.includes(company)) && (cat === "All" || q.category === cat)).length} MCQs
             </p>
           </div>
 

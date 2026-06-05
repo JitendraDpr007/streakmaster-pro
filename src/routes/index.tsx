@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CATEGORY_ICON } from "@/lib/skillstreak/data";
+import { CATEGORY_ICON, TYPE_LABEL } from "@/lib/skillstreak/data";
 import { useQuestions } from "@/lib/skillstreak/questions";
 import { useUser } from "@/lib/skillstreak/store";
 import { ChallengeModal } from "@/components/skillstreak/ChallengeModal";
@@ -115,6 +115,9 @@ function Home() {
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-1.5">
+                  <span className="rounded-full border border-cyan/30 bg-cyan/10 px-2 py-0.5 text-[8px] font-bold uppercase tracking-widest text-cyan">
+                    {TYPE_LABEL[q.type]}
+                  </span>
                   <DifficultyBadge d={q.difficulty} />
                   <XpBadge xp={q.xp} />
                 </div>

@@ -1,8 +1,15 @@
 export type Difficulty = "EASY" | "MEDIUM" | "HARD";
 export type Category = "DSA" | "SQL" | "System Design" | "Behavioral" | "Resume Tips";
+export type QuestionType = "mcq" | "coding" | "sql" | "system_design";
+
+export interface DesignSection {
+  title: string;
+  points: string[];
+}
 
 export interface Question {
   id: string;
+  type: QuestionType;
   category: Category;
   subcategory: string;
   title: string;
@@ -11,8 +18,10 @@ export interface Question {
   companies: string[];
   story: string;
   question: string;
+  // MCQ
   options: string[];
   correctIndex: number;
+  // Shared explanations
   explanation: string;
   whyOthersWrong: string;
   complexity?: string;
@@ -20,6 +29,19 @@ export interface Question {
   followup: string;
   similar?: string[];
   icon: string;
+  // Coding
+  problemStatement?: string;
+  leetcodeUrl?: string;
+  gfgUrl?: string;
+  // SQL
+  sqlSchema?: string;
+  sqlSeed?: string;
+  sqlExpected?: { columns: string[]; rows: unknown[][] };
+  // System Design
+  requirements?: DesignSection[];
+  hld?: DesignSection[];
+  lld?: DesignSection[];
+  tradeoffs?: DesignSection[];
 }
 
 export const CATEGORY_ICON: Record<Category, string> = {
@@ -28,6 +50,13 @@ export const CATEGORY_ICON: Record<Category, string> = {
   "System Design": "⚙️",
   Behavioral: "💬",
   "Resume Tips": "📄",
+};
+
+export const TYPE_LABEL: Record<QuestionType, string> = {
+  mcq: "Quick Quiz",
+  coding: "Coding",
+  sql: "SQL Lab",
+  system_design: "System Design",
 };
 
 export const COMPANIES = [
@@ -43,92 +72,7 @@ export const COMPANIES = [
   "Walmart Labs",
 ];
 
-export const QUESTIONS: Question[] = [
-  {
-    id: "q1",
-    category: "DSA",
-    subcategory: "Arrays · Sliding Window",
-    title: "Two Sum — The Classic",
-    difficulty: "EASY",
-    xp: 20,
-    companies: ["Google", "Amazon", "Flipkart"],
-    icon: "🧠",
-    story:
-      "You're a new SDE at Razorpay. A customer service ticket comes in — two suspicious transactions sum to a fraud threshold. Write the function that flags them instantly.",
-    question:
-      "Given nums = [2, 7, 11, 15] and target = 9, return indices of the two numbers that add up to target.",
-    options: ["[0,1]", "[1,2]", "[0,2]", "[2,3]"],
-    correctIndex: 0,
-    explanation:
-      "HashMap approach: for each number, check if complement (target − num) exists in map. If yes, return both indices. If no, store current number with its index. Single pass = O(n) time, O(n) space.",
-    whyOthersWrong:
-      "[1,2] = 7+11=18 ≠ 9. [0,2] = 2+11=13 ≠ 9. [2,3] = 11+15=26 ≠ 9.",
-    complexity: "O(n) time | O(n) space",
-    interviewTip:
-      "Always clarify: can the same element be used twice? Can there be multiple answers? Shows the interviewer you think about edge cases.",
-    followup: "What if the array is sorted? Can you do O(1) space?",
-    similar: ["3Sum", "Two Sum II — Sorted Input"],
-  },
-  {
-    id: "q2",
-    category: "SQL",
-    subcategory: "Aggregation · Window Functions",
-    title: "Duplicate Emails — Classic Dedup",
-    difficulty: "MEDIUM",
-    xp: 35,
-    companies: ["Uber", "Atlassian", "Walmart Labs"],
-    icon: "🗄️",
-    story:
-      "You're on Swiggy's data team. Users are getting double OTPs — turned out duplicate emails exist in the DB. Your manager needs a query in the next 5 minutes.",
-    question: "Table: Users(id, email). Find all emails that appear more than once.",
-    options: [
-      "SELECT email FROM Users WHERE COUNT(email) > 1",
-      "SELECT email FROM Users GROUP BY email HAVING COUNT(*) > 1",
-      "SELECT DISTINCT email FROM Users",
-      "SELECT email FROM Users ORDER BY email LIMIT 10",
-    ],
-    correctIndex: 1,
-    explanation:
-      "GROUP BY collapses rows with the same email. HAVING filters groups (like WHERE but for aggregates). COUNT(*) > 1 means the group has more than one row = duplicate.",
-    whyOthersWrong:
-      "A: WHERE can't use aggregate functions directly. C: DISTINCT shows unique emails — opposite of what we want. D: just ordering, no dedup logic.",
-    complexity: "O(n) scan + hash grouping",
-    interviewTip:
-      "Follow up: how to DELETE duplicates keeping only the lowest id? Use DELETE with a self-join or CTE with ROW_NUMBER().",
-    followup: "Write a query to keep only one row per duplicate email (the one with lowest id).",
-    similar: ["Nth Highest Salary", "Consecutive Numbers"],
-  },
-  {
-    id: "q3",
-    category: "System Design",
-    subcategory: "Rate Limiting · Consistent Hashing",
-    title: "Rate Limiter at Scale",
-    difficulty: "HARD",
-    xp: 75,
-    companies: ["Uber", "Google", "Confluent", "Razorpay"],
-    icon: "⚙️",
-    story:
-      "It's IPL final night. You're on-call at Hotstar. 5 crore concurrent users. A bot farm is hitting your stream API 1000 times/second from 50 IPs. Your naive rate limiter just crashed. The CTO is on Slack. Go.",
-    question:
-      "Which rate limiting algorithm best handles bursty traffic while protecting your API at distributed scale?",
-    options: [
-      "Fixed Window Counter — simple counter resets every minute",
-      "Token Bucket — tokens refill at fixed rate, bursts allowed up to bucket size",
-      "Sliding Window Log — store timestamp of every request",
-      "Database counter — SELECT then UPDATE on every request",
-    ],
-    correctIndex: 1,
-    explanation:
-      "Token Bucket is ideal: tokens accumulate at a fixed rate (refill rate). Each request costs 1 token. Burst traffic is absorbed if the bucket has tokens. Implement with Redis: bucket = key, DECR atomically via a Lua script. Distributed because Redis is shared across all your API server instances.",
-    whyOthersWrong:
-      "Fixed Window: boundary burst problem — 2× traffic possible at the window edge. Sliding Window Log: memory intensive, stores every request timestamp. DB counter: network round-trip per request = too slow, race conditions without transactions.",
-    complexity: "O(1) per request with Redis Lua",
-    interviewTip:
-      "Always mention: where does the state live? (Redis, not in-memory). What happens if Redis goes down? (fail open vs fail closed). This shows production thinking.",
-    followup: "How would you implement per-user AND per-IP rate limiting simultaneously?",
-    similar: ["Design Distributed Cache", "Design URL Shortener"],
-  },
-];
+export const QUESTIONS: Question[] = [];
 
 export const ACHIEVEMENTS = [
   { id: "warrior", icon: "🔥", title: "7 Day Warrior", desc: "7 day streak" },

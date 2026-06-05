@@ -41,6 +41,33 @@ export type Database = {
         }
         Relationships: []
       }
+      notes: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          question_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          id?: string
+          question_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          question_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           achievements: string[]
@@ -108,18 +135,29 @@ export type Database = {
           difficulty: Database["public"]["Enums"]["difficulty"]
           explanation: string
           followup: string | null
+          gfg_url: string | null
+          hld: Json | null
           icon: string | null
           id: string
           interview_tip: string | null
           is_published: boolean
+          leetcode_url: string | null
+          lld: Json | null
           options: Json
+          problem_statement: string | null
           question: string
+          requirements: Json | null
           similar_questions: string[] | null
           slug: string | null
+          sql_expected: Json | null
+          sql_schema: string | null
+          sql_seed: string | null
           story: string
           subcategory: string
           times_solved: number
           title: string
+          tradeoffs: Json | null
+          type: string
           updated_at: string
           why_others_wrong: string | null
           xp: number
@@ -133,18 +171,29 @@ export type Database = {
           difficulty?: Database["public"]["Enums"]["difficulty"]
           explanation: string
           followup?: string | null
+          gfg_url?: string | null
+          hld?: Json | null
           icon?: string | null
           id?: string
           interview_tip?: string | null
           is_published?: boolean
+          leetcode_url?: string | null
+          lld?: Json | null
           options: Json
+          problem_statement?: string | null
           question: string
+          requirements?: Json | null
           similar_questions?: string[] | null
           slug?: string | null
+          sql_expected?: Json | null
+          sql_schema?: string | null
+          sql_seed?: string | null
           story: string
           subcategory: string
           times_solved?: number
           title: string
+          tradeoffs?: Json | null
+          type?: string
           updated_at?: string
           why_others_wrong?: string | null
           xp?: number
@@ -158,18 +207,29 @@ export type Database = {
           difficulty?: Database["public"]["Enums"]["difficulty"]
           explanation?: string
           followup?: string | null
+          gfg_url?: string | null
+          hld?: Json | null
           icon?: string | null
           id?: string
           interview_tip?: string | null
           is_published?: boolean
+          leetcode_url?: string | null
+          lld?: Json | null
           options?: Json
+          problem_statement?: string | null
           question?: string
+          requirements?: Json | null
           similar_questions?: string[] | null
           slug?: string | null
+          sql_expected?: Json | null
+          sql_schema?: string | null
+          sql_seed?: string | null
           story?: string
           subcategory?: string
           times_solved?: number
           title?: string
+          tradeoffs?: Json | null
+          type?: string
           updated_at?: string
           why_others_wrong?: string | null
           xp?: number

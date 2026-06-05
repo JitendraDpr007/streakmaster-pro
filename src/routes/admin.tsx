@@ -195,6 +195,7 @@ function QuestionManager() {
 
   const handleSave = async (q: Question) => {
     const payload = {
+      type: q.type,
       category: q.category,
       subcategory: q.subcategory,
       title: q.title,
@@ -212,6 +213,16 @@ function QuestionManager() {
       interview_tip: q.interviewTip,
       followup: q.followup,
       similar_questions: q.similar ?? null,
+      problem_statement: q.problemStatement ?? null,
+      leetcode_url: q.leetcodeUrl ?? null,
+      gfg_url: q.gfgUrl ?? null,
+      sql_schema: q.sqlSchema ?? null,
+      sql_seed: q.sqlSeed ?? null,
+      sql_expected: q.sqlExpected ?? null,
+      requirements: q.requirements ?? null,
+      hld: q.hld ?? null,
+      lld: q.lld ?? null,
+      tradeoffs: q.tradeoffs ?? null,
       is_published: true,
     };
     if (questions.some((x) => x.id === q.id)) {
@@ -339,6 +350,7 @@ function QuestionForm({
   const [q, setQ] = useState<Question>(
     initial ?? {
       id: "",
+      type: "mcq",
       category: "DSA",
       subcategory: "",
       title: "",
@@ -383,6 +395,19 @@ function QuestionForm({
         </div>
 
         <div className="space-y-3 text-sm">
+          <Field label="Question Type">
+            <select
+              value={q.type}
+              onChange={(e) => set("type", e.target.value as Question["type"])}
+              className="input"
+            >
+              <option value="mcq">MCQ (Quick Quiz)</option>
+              <option value="coding">Coding (LeetCode/GFG link)</option>
+              <option value="sql">SQL (in-browser editor)</option>
+              <option value="system_design">System Design (HLD/LLD walkthrough)</option>
+            </select>
+          </Field>
+
           <Field label="Title">
             <input value={q.title} onChange={(e) => set("title", e.target.value)} className="input" />
           </Field>
@@ -466,6 +491,94 @@ function QuestionForm({
           <Field label="Complexity (optional)">
             <input value={q.complexity ?? ""} onChange={(e) => set("complexity", e.target.value)} className="input" />
           </Field>
+
+          {(q.type === "coding" || q.type === "sql") && (
+            <Field label="Problem statement (full text)">
+              <textarea
+                value={q.problemStatement ?? ""}
+                onChange={(e) => set("problemStatement", e.target.value)}
+                rows={4}
+                className="input"
+              />
+            </Field>
+          )}
+
+          {q.type === "coding" && (
+            <div className="grid grid-cols-1 gap-3">
+              <Field label="LeetCode URL">
+                <input
+                  value={q.leetcodeUrl ?? ""}
+                  onChange={(e) => set("leetcodeUrl", e.target.value)}
+                  placeholder="https://leetcode.com/problems/..."
+                  className="input"
+                />
+              </Field>
+              <Field label="GeeksforGeeks URL">
+                <input
+                  value={q.gfgUrl ?? ""}
+                  onChange={(e) => set("gfgUrl", e.target.value)}
+                  placeholder="https://www.geeksforgeeks.org/..."
+                  className="input"
+                />
+              </Field>
+            </div>
+          )}
+
+          {q.type === "sql" && (
+            <>
+              <Field label="SQL Schema (CREATE TABLE …)">
+                <textarea
+                  value={q.sqlSchema ?? ""}
+                  onChange={(e) => set("sqlSchema", e.target.value)}
+                  rows={4}
+                  className="input font-mono text-xs"
+                />
+              </Field>
+              <Field label="SQL Seed (INSERT INTO …)">
+                <textarea
+                  value={q.sqlSeed ?? ""}
+                  onChange={(e) => set("sqlSeed", e.target.value)}
+                  rows={4}
+                  className="input font-mono text-xs"
+                />
+              </Field>
+              <Field label='Expected output JSON: {"columns":[...],"rows":[[...]]}'>
+                <textarea
+                  value={q.sqlExpected ? JSON.stringify(q.sqlExpected, null, 2) : ""}
+                  onChange={(e) => {
+                    try {
+                      set("sqlExpected", e.target.value ? JSON.parse(e.target.value) : undefined);
+                    } catch {
+                      // ignore parse errors while typing
+                    }
+                  }}
+                  rows={4}
+                  className="input font-mono text-xs"
+                />
+              </Field>
+            </>
+          )}
+
+          {q.type === "system_design" && (
+            <>
+              {(["requirements", "hld", "lld", "tradeoffs"] as const).map((field) => (
+                <Field key={field} label={`${field.toUpperCase()} sections JSON: [{title, points:[]}]`}>
+                  <textarea
+                    value={q[field] ? JSON.stringify(q[field], null, 2) : ""}
+                    onChange={(e) => {
+                      try {
+                        set(field, e.target.value ? JSON.parse(e.target.value) : undefined);
+                      } catch {
+                        // ignore
+                      }
+                    }}
+                    rows={5}
+                    className="input font-mono text-xs"
+                  />
+                </Field>
+              ))}
+            </>
+          )}
 
           <button
             onClick={() => onSave(q)}
