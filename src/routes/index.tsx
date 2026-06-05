@@ -27,7 +27,22 @@ function Home() {
     if (ready && !user.onboarded) navigate({ to: "/onboarding" });
   }, [ready, user.onboarded, navigate]);
 
-  const challenges = useMemo(() => allQuestions.slice(0, 3), [allQuestions]);
+  const challenges = useMemo(() => {
+    // Rotate one challenge per type per day so coding/sql/system_design surface alongside MCQ.
+    const byType: Record<string, typeof allQuestions> = { coding: [], sql: [], system_design: [], mcq: [] };
+    for (const q of allQuestions) (byType[q.type] ??= []).push(q);
+    const dayIndex = Math.floor(Date.now() / 86_400_000);
+    const pick = (arr: typeof allQuestions) => (arr.length ? arr[dayIndex % arr.length] : null);
+    const order = ["coding", "sql", "system_design", "mcq"] as const;
+    const picked = order.map((t) => pick(byType[t])).filter(Boolean) as typeof allQuestions;
+    // Ensure exactly 3, padding with extras from the largest pool (mcq) if needed.
+    const seen = new Set(picked.map((q) => q.id));
+    for (const q of allQuestions) {
+      if (picked.length >= 3) break;
+      if (!seen.has(q.id)) { picked.push(q); seen.add(q.id); }
+    }
+    return picked.slice(0, 3);
+  }, [allQuestions]);
   const doneCount = challenges.filter((q) => user.solved.includes(q.id)).length;
   const open = openId ? challenges.find((q) => q.id === openId) ?? null : null;
 
