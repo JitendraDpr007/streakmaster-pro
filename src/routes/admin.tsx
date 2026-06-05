@@ -492,6 +492,94 @@ function QuestionForm({
             <input value={q.complexity ?? ""} onChange={(e) => set("complexity", e.target.value)} className="input" />
           </Field>
 
+          {(q.type === "coding" || q.type === "sql") && (
+            <Field label="Problem statement (full text)">
+              <textarea
+                value={q.problemStatement ?? ""}
+                onChange={(e) => set("problemStatement", e.target.value)}
+                rows={4}
+                className="input"
+              />
+            </Field>
+          )}
+
+          {q.type === "coding" && (
+            <div className="grid grid-cols-1 gap-3">
+              <Field label="LeetCode URL">
+                <input
+                  value={q.leetcodeUrl ?? ""}
+                  onChange={(e) => set("leetcodeUrl", e.target.value)}
+                  placeholder="https://leetcode.com/problems/..."
+                  className="input"
+                />
+              </Field>
+              <Field label="GeeksforGeeks URL">
+                <input
+                  value={q.gfgUrl ?? ""}
+                  onChange={(e) => set("gfgUrl", e.target.value)}
+                  placeholder="https://www.geeksforgeeks.org/..."
+                  className="input"
+                />
+              </Field>
+            </div>
+          )}
+
+          {q.type === "sql" && (
+            <>
+              <Field label="SQL Schema (CREATE TABLE …)">
+                <textarea
+                  value={q.sqlSchema ?? ""}
+                  onChange={(e) => set("sqlSchema", e.target.value)}
+                  rows={4}
+                  className="input font-mono text-xs"
+                />
+              </Field>
+              <Field label="SQL Seed (INSERT INTO …)">
+                <textarea
+                  value={q.sqlSeed ?? ""}
+                  onChange={(e) => set("sqlSeed", e.target.value)}
+                  rows={4}
+                  className="input font-mono text-xs"
+                />
+              </Field>
+              <Field label='Expected output JSON: {"columns":[...],"rows":[[...]]}'>
+                <textarea
+                  value={q.sqlExpected ? JSON.stringify(q.sqlExpected, null, 2) : ""}
+                  onChange={(e) => {
+                    try {
+                      set("sqlExpected", e.target.value ? JSON.parse(e.target.value) : undefined);
+                    } catch {
+                      // ignore parse errors while typing
+                    }
+                  }}
+                  rows={4}
+                  className="input font-mono text-xs"
+                />
+              </Field>
+            </>
+          )}
+
+          {q.type === "system_design" && (
+            <>
+              {(["requirements", "hld", "lld", "tradeoffs"] as const).map((field) => (
+                <Field key={field} label={`${field.toUpperCase()} sections JSON: [{title, points:[]}]`}>
+                  <textarea
+                    value={q[field] ? JSON.stringify(q[field], null, 2) : ""}
+                    onChange={(e) => {
+                      try {
+                        set(field, e.target.value ? JSON.parse(e.target.value) : undefined);
+                      } catch {
+                        // ignore
+                      }
+                    }}
+                    rows={5}
+                    className="input font-mono text-xs"
+                  />
+                </Field>
+              ))}
+            </>
+          )}
+
           <button
             onClick={() => onSave(q)}
             className="mt-2 w-full rounded-xl bg-lime py-3 text-sm font-bold text-primary-foreground active:scale-[0.97]"
