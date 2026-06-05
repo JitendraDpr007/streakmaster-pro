@@ -164,7 +164,7 @@ function MockPage() {
               ))}
             </div>
             <p className="mt-2 font-mono text-[10px] text-muted-foreground">
-              Pool: {all.filter((q) => (company === "All" || q.companies.includes(company)) && (cat === "All" || q.category === cat)).length} questions
+              Pool: {all.filter((q) => q.type === "mcq" && (company === "All" || q.companies.includes(company)) && (cat === "All" || q.category === cat)).length} MCQs
             </p>
           </div>
 
