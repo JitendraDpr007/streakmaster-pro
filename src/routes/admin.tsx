@@ -195,6 +195,7 @@ function QuestionManager() {
 
   const handleSave = async (q: Question) => {
     const payload = {
+      type: q.type,
       category: q.category,
       subcategory: q.subcategory,
       title: q.title,
@@ -212,6 +213,16 @@ function QuestionManager() {
       interview_tip: q.interviewTip,
       followup: q.followup,
       similar_questions: q.similar ?? null,
+      problem_statement: q.problemStatement ?? null,
+      leetcode_url: q.leetcodeUrl ?? null,
+      gfg_url: q.gfgUrl ?? null,
+      sql_schema: q.sqlSchema ?? null,
+      sql_seed: q.sqlSeed ?? null,
+      sql_expected: q.sqlExpected ?? null,
+      requirements: q.requirements ?? null,
+      hld: q.hld ?? null,
+      lld: q.lld ?? null,
+      tradeoffs: q.tradeoffs ?? null,
       is_published: true,
     };
     if (questions.some((x) => x.id === q.id)) {
@@ -339,6 +350,7 @@ function QuestionForm({
   const [q, setQ] = useState<Question>(
     initial ?? {
       id: "",
+      type: "mcq",
       category: "DSA",
       subcategory: "",
       title: "",
