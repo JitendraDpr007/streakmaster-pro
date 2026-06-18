@@ -1,7 +1,4 @@
-import "../src/lib/error-capture";
-import { consumeLastCapturedError } from "../src/lib/error-capture";
-import { renderErrorPage } from "../src/lib/error-page";
-import server from "../src/server";
+import server from "../dist/server/server.js";
 
 function createRequest(req: any): Request {
   const protocol = req.headers["x-forwarded-proto"] || "http";
