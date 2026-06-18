@@ -2,13 +2,28 @@
   "version": 2,
   "builds": [
     {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
       "src": "api/index.mjs",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "^/(.*\\.(js|css|png|jpg|jpeg|webp|avif|svg|json|map|ico|txt|woff2?))$",
+      "dest": "/dist/client/$1"
+    },
+    {
+      "src": "^/assets/(.*)$",
+      "dest": "/dist/client/assets/$1"
+    },
+    {
+      "src": "^/(.*)$",
       "dest": "/api/index.mjs"
     }
   ]
